@@ -24,21 +24,6 @@ elif [ `uname` = "Darwin" ]; then
     path=(~/bin(N-/) /usr/local/bin(N-/) $path)
 fi
 
-# 自動補完を有効にする
-autoload -Uz compinit
-
-# 入力したコマンドが存在せず、かつディレクトリ名と一致するなら、ディレクトリにcdする
-setopt auto_cd
-
-# cd した先のディレクトリをディレクトリスタックに追加する
-setopt auto_pushd
-
-# pushd した時に、ディレクトリが既にスタックに含まれていればスタックに追加しない
-setopt pushd_ignore_dups
-
-# 拡張 glob を有効にする
-setopt extended_glob
-
 #------------------------------------------------------------------------------
 # 基本
 #------------------------------------------------------------------------------
@@ -79,11 +64,59 @@ setopt hist_no_store
 #------------------------------------------------------------------------------
 # 補完
 #------------------------------------------------------------------------------
+# 自動補完を有効にする
+autoload -Uz compinit
+
 # 入力しているコマンド名が間違っている場合にもしかして：を出す。
 setopt correct
 
 # タブによるファイルの順番切り替えをしない
 unsetopt auto_menu
+
+# 入力したコマンドが存在せず、かつディレクトリ名と一致するなら、ディレクトリにcdする
+setopt auto_cd
+
+# cd した先のディレクトリをディレクトリスタックに追加する
+setopt auto_pushd
+
+# pushd した時に、ディレクトリが既にスタックに含まれていればスタックに追加しない
+setopt pushd_ignore_dups
+
+# 拡張 glob を有効にする
+setopt extended_glob
+
+# ディレクトリ名の補完で末尾の / を自動的に付加し、次の補完に備える
+setopt auto_param_slash
+
+# カッコの対応などを自動的に補完
+setopt auto_param_keys
+
+# ファイル名の展開でディレクトリにマッチした場合 末尾に / を付加
+setopt mark_dirs
+
+# 補完候補一覧でファイルの種別を識別マーク表示 (訳注:ls -F の記号)
+setopt list_types
+
+# コマンドラインでも # 以降をコメントと見なす
+setopt interactive_comments
+
+# コマンドラインの引数で --prefix=/usr などの = 以降でも補完できる
+setopt magic_equal_subst
+
+# 語の途中でもカーソル位置で補完
+setopt complete_in_word
+
+# カーソル位置は保持したままファイル名一覧を順次その場で表示
+setopt always_last_prompt
+
+# 日本語ファイル名等8ビットを通す
+setopt print_eight_bit
+
+# 明確なドットの指定なしで.から始まるファイルをマッチ
+setopt globdots
+
+# 補完の基本設定
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 
 #------------------------------------------------------------------------------
 # プロンプト
