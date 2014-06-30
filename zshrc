@@ -27,6 +27,9 @@ fi
 #------------------------------------------------------------------------------
 # 基本
 #------------------------------------------------------------------------------
+# zshのバージョン判定を使う
+autoload -Uz is-at-least
+
 # Emacsライクな操作を有効にする
 # Vi ライクな操作の場合は`bindkey -v`とする
 bindkey -e
@@ -64,9 +67,6 @@ setopt hist_no_store
 #------------------------------------------------------------------------------
 # 補完
 #------------------------------------------------------------------------------
-# 自動補完を有効にする
-autoload -Uz compinit
-
 # 入力しているコマンド名が間違っている場合にもしかして：を出す。
 setopt correct
 
@@ -115,8 +115,29 @@ setopt print_eight_bit
 # 明確なドットの指定なしで.から始まるファイルをマッチ
 setopt globdots
 
-# 補完の基本設定
+# カーソルによる補完候補の選択を有効化
+zstyle ':completion:*:default' menu select=1
+
+# 色指定にLS_COLORSを使用
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+
+
+#---------------------------------------
+# 補完候補の追加
+#---------------------------------------
+# zsh-completions
+if is-at-least 4.3.10 && [ -d $HOME/.zsh.d/modules/zsh-completions ]; then
+    fpath=($HOME/.zsh.d/modules/zsh-completions/src $fpath)
+fi
+
+# rbenv
+if is-at-least 4.3.10 && [ -d $HOME/.rbenv/completions/rbenv.zsh ]; then
+    fpath=($HOME/.rbenv/completions/rbenv.zsh $fpath)
+fi
+
+# 補完機能の初期化
+autoload -Uz compinit
+compinit -d $HOME/.zsh.d/tmp/$USER-zcompdump
 
 #------------------------------------------------------------------------------
 # プロンプト
@@ -129,9 +150,6 @@ autoload -Uz vcs_info
 
 # zshのhookを使う
 autoload -Uz add-zsh-hook
-
-# zshのバージョン判定を使う
-autoload -Uz is-at-least
 
 
 # 以下の3つのメッセージをエクスポートする
@@ -257,6 +275,9 @@ fi
 # 表示毎にPROMPTで設定されている文字列を評価する
 setopt prompt_subst
 
+# 常に最後の行のみ右プロンプトを表示する
+setopt transient_rprompt
+
 # 左側のプロンプトを構成する関数
 function left_prompt {
     local formatted_upper_prompt="[`prompt_get_path`]"$'\n'
@@ -338,6 +359,7 @@ elif [ `uname` = "Darwin" ]; then
     alias ll="ls -lG"
     alias la="ls -alG"
     alias vi="vim"
+    alias grep="grep --color"
 
     # phpenvの設定
     if [ -e ~/.phpenv ]; then
