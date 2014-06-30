@@ -64,6 +64,14 @@ setopt share_history
 # historyコマンドをヒストリから取り除く
 setopt hist_no_store
 
+# historyからコマンドを検索する
+# git add[Ctrl+P or Ctrl+N]でgit addから始まるコマンドをhistoryから順に検索する
+autoload history-search-end
+zle -N history-beginning-search-backward-end history-search-end
+zle -N history-beginning-search-forward-end history-search-end
+bindkey "^P" history-beginning-search-backward-end
+bindkey "^N" history-beginning-search-forward-end
+
 #------------------------------------------------------------------------------
 # 補完
 #------------------------------------------------------------------------------
@@ -114,6 +122,16 @@ setopt print_eight_bit
 
 # 明確なドットの指定なしで.から始まるファイルをマッチ
 setopt globdots
+
+# 補完候補を詰めて表示する設定
+setopt list_packed
+
+# 補完候補表示の時にbeep音を鳴らさない
+setopt nolistbeep
+
+# 先方予測機能を有効に
+autoload -U predict-on
+predict-on
 
 # カーソルによる補完候補の選択を有効化
 zstyle ':completion:*:default' menu select=1
