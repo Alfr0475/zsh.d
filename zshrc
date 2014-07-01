@@ -161,6 +161,8 @@ compinit -d $HOME/.zsh.d/tmp/$USER-zcompdump
 # プロンプト
 #------------------------------------------------------------------------------
 # 色を使う
+# 基本色: 0:black、1:red、2:green、3:yellow、4:blue、5:magenta、6:cyan、7:white
+# 8以降は数値指定
 autoload -Uz colors
 
 # zshのvcs_infoを使う
@@ -298,8 +300,15 @@ setopt transient_rprompt
 
 # 左側のプロンプトを構成する関数
 function left_prompt {
-    local formatted_upper_prompt="[`prompt_get_path`]"$'\n'
-    local formatted_under_prompt="`prompt_get_user`@`prompt_get_host` `prompt_get_mark`"
+    local formatted_upper_prompt="`prompt_get_path`"$'\n'
+    local formatted_under_prompt="`prompt_get_user`@`prompt_get_host`"
+
+    local formatted_tmux_display="`prompt_get_tmux_display`"
+    if [ -n "$formatted_tmux_display" ]; then
+        formatted_under_prompt="$formatted_under_prompt $formatted_tmux_display"
+    fi
+
+    formatted_under_prompt="$formatted_under_prompt `prompt_get_mark`"
     local formatted_prompt=" $formatted_upper_prompt$formatted_under_prompt "
 
     # 左側のプロンプト
@@ -319,7 +328,7 @@ function right_prompt {
 #---------------------------------------
 # カレントディレクトリ
 function prompt_get_path {
-    echo "%~"
+    echo "%F{012}[%~]%f"
 }
 
 # ユーザー名
@@ -364,6 +373,13 @@ function prompt_get_vcs_info_msg {
     fi
 }
 
+# tmux情報
+function prompt_get_tmux_display {
+    if [ -n "$TMUX" ]; then
+        echo "%F{blue}`tmux display -p "#I-#P"`%f"
+    fi
+}
+
 left_prompt
 add-zsh-hook precmd right_prompt
 
@@ -402,4 +418,127 @@ fi
 # iTerm2のタブ名を変更する
 function title {
     echo -ne "\033]0;"$* "\007"
+}
+
+function color256 {
+    for code in {000..255};
+    do
+        print -nP -- "%F{$code}$code %f"; [ $((${code} % 16)) -eq 15 ] && echo;
+    done
+}
+
+function color16 {
+    echo " On White(47)     On Black(40)     On Default     Color Code"
+
+    echo -e "\
+\033[47m\033[1;37m  White        \033[0m  \
+\033[40m\033[1;37m  White        \033[0m  \
+\033[1;37m  White        \033[0m\
+  1;37\
+"
+
+    echo -e "\
+\033[47m\033[37m  Light Gray   \033[0m  \
+\033[40m\033[37m  Light Gray   \033[0m  \
+\033[37m  Light Gray   \033[0m  \
+37\
+"
+
+    echo -e "\
+\033[47m\033[1;30m  Gray         \033[0m  \
+\033[40m\033[1;30m  Gray         \033[0m  \
+\033[1;30m  Gray         \033[0m  \
+1;30\
+"
+
+    echo -e "\
+\033[47m\033[30m  Black        \033[0m  \
+\033[40m\033[30m  Black        \033[0m  \
+\033[30m  Black        \033[0m  \
+30\
+"
+
+    echo -e "\
+\033[47m\033[31m  Red          \033[0m  \
+\033[40m\033[31m  Red          \033[0m  \
+\033[31m  Red          \033[0m  \
+31\
+"
+
+    echo -e "\
+\033[47m\033[1;31m  Light Red    \033[0m  \
+\033[40m\033[1;31m  Light Red    \033[0m  \
+\033[1;31m  Light Red    \033[0m  \
+1;31\
+"
+
+    echo -e "\
+\033[47m\033[32m  Green        \033[0m  \
+\033[40m\033[32m  Green        \033[0m  \
+\033[32m  Green        \033[0m  \
+32\
+"
+
+    echo -e "\
+\033[47m\033[1;32m  Light Green  \033[0m  \
+\033[40m\033[1;32m  Light Green  \033[0m  \
+\033[1;32m  Light Green  \033[0m  \
+1;32\
+"
+
+    echo -e "\
+\033[47m\033[33m  Brown        \033[0m  \
+\033[40m\033[33m  Brown        \033[0m  \
+\033[33m  Brown        \033[0m  \
+33\
+"
+
+    echo -e "\
+\033[47m\033[1;33m  Yellow       \033[0m  \
+\033[40m\033[1;33m  Yellow       \033[0m  \
+\033[1;33m  Yellow       \033[0m  \
+1;33\
+"
+
+    echo -e "\
+\033[47m\033[34m  Blue         \033[0m  \
+\033[40m\033[34m  Blue         \033[0m  \
+\033[34m  Blue         \033[0m  \
+34\
+"
+
+    echo -e "\
+\033[47m\033[1;34m  Light Blue   \033[0m  \
+\033[40m\033[1;34m  Light Blue   \033[0m  \
+\033[1;34m  Light Blue   \033[0m  \
+1;34\
+"
+
+    echo -e "\
+\033[47m\033[35m  Purple       \033[0m  \
+\033[40m\033[35m  Purple       \033[0m  \
+\033[35m  Purple       \033[0m  \
+35\
+"
+
+    echo -e "\
+\033[47m\033[1;35m  Pink         \033[0m  \
+\033[40m\033[1;35m  Pink         \033[0m  \
+\033[1;35m  Pink         \033[0m  \
+1;35\
+"
+
+    echo -e "\
+\033[47m\033[36m  Cyan         \033[0m  \
+\033[40m\033[36m  Cyan         \033[0m  \
+\033[36m  Cyan         \033[0m  \
+36\
+"
+
+    echo -e "\
+\033[47m\033[1;36m  Light Cyan   \033[0m  \
+\033[40m\033[1;36m  Light Cyan   \033[0m  \
+\033[1;36m  Light Cyan   \033[0m  \
+1;36\
+"
 }
