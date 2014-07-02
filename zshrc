@@ -130,8 +130,8 @@ setopt list_packed
 setopt nolistbeep
 
 # 先方予測機能を有効に
-autoload -U predict-on
-predict-on
+# autoload -U predict-on
+# predict-on
 
 # カーソルによる補完候補の選択を有効化
 zstyle ':completion:*:default' menu select=1
