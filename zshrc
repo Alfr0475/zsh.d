@@ -420,6 +420,32 @@ function title {
     echo -ne "\033]0;"$* "\007"
 }
 
+# 
+function tmux_powerline_theme {
+    if ! [ -n "$TMUX" ]; then
+        echo "not run tmux."
+        return
+    fi
+
+    case "$1" in
+        "-l" | "--list" )
+            for theme in `ls -1 $HOME/.tmux.d/tmux-powerline/themes`
+            do
+                if [ "`basename $theme .sh`" = "`tmux show-environment -g TMUX_POWERLINE_THEME | sed -e 's/TMUX_POWERLINE_THEME=//'`" ]; then
+                    echo "*`basename $theme .sh`"
+                else
+                    echo " `basename $theme .sh`"
+                fi
+            done
+            ;;
+        *)
+            if [ -e "$HOME/.tmux.d/tmux-powerline/themes/$1.sh" -o -L "$HOME/.tmux.d/tmux-powerline/themes/$1.sh" ]; then
+                tmux set-environment -g TMUX_POWERLINE_THEME $1
+            fi
+            ;;
+    esac
+}
+
 function color256 {
     for code in {000..255};
     do
