@@ -397,7 +397,7 @@ elif [ `uname` = "Darwin" ]; then
 
     # phpenvの設定
     if [ -e ~/.phpenv ]; then
-        export PATH=$PATH:$HOME/.phpenv/bin
+        path=($HOME/.phpenv/bin(N-/) $path)
         eval "$(phpenv init -)"
     fi
 
