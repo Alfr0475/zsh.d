@@ -380,7 +380,7 @@ function prompt_get_tmux_display {
     fi
 }
 
-left_prompt
+add-zsh-hook precmd left_prompt
 add-zsh-hook precmd right_prompt
 
 #------------------------------------------------------------------------------
