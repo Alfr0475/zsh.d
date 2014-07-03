@@ -446,6 +446,13 @@ function tmux_powerline_theme {
     esac
 }
 
+function printpath {
+    for path_string in $path
+    do
+        echo $path_string
+    done
+}
+
 function color256 {
     for code in {000..255};
     do
