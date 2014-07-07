@@ -6,3 +6,5 @@ if [ -x /usr/libexec/path_helper ]; then
 fi
 
 export EDITOR=/usr/local/bin/vim
+export GOPATH=$HOME/work/go
+
