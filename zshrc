@@ -456,14 +456,42 @@ function printpath {
 
 # 引数のコマンドを数秒間隔で実行
 function loopwatch {
+    local usage="Usage: $0 [-s 5] COMMAND"
+    local enable_s=""
+    local s_looptime=5
+
+    while getopts :s: opt; do
+        case ${opt} in
+            s)
+                # 数値チェック
+                if [[ -z `echo ${OPTARG} | egrep "[0-9]+$"` ]]; then
+                    echo $usage
+                    return
+                fi
+                # 有効数値チェック
+                if [ ${OPTARG} -le 0 ]; then
+                    echo $usage
+                    return
+                fi
+                s_looptime=${OPTARG}
+                ;;
+            *)
+                echo $usage
+                return
+                ;;
+        esac
+    done
+
+    shift $((OPTIND-1))
+
     # 無限ループして処理
     while true
     do
+        clear
         date
         echo
         $*
-        sleep 5;
-        clear
+        `sleep ${s_looptime}`;
     done
 }
 
