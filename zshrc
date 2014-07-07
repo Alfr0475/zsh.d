@@ -420,7 +420,7 @@ function title {
     echo -ne "\033]0;"$* "\007"
 }
 
-# 
+# tmuxのテーマを選択する
 function tmux_powerline_theme {
     if ! [ -n "$TMUX" ]; then
         echo "not run tmux."
@@ -446,6 +446,7 @@ function tmux_powerline_theme {
     esac
 }
 
+# pathを整形して出力
 function printpath {
     for path_string in $path
     do
