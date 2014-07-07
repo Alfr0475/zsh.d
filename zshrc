@@ -184,7 +184,7 @@ zstyle ':vcs_info:*' enable git svn hg cvs bzr
 
 
 # 標準のフォーマット(git 以外で使用する)
-zstyle ':vcs_info:*' formats '(%a)-[%b]'
+zstyle ':vcs_info:*' formats '(%s)-[%b]'
 zstyle ':vcs_info:*' actionformats '(%s)-[%b]' '%m' '<!%a>'
 zstyle ':vcs_info:(svn|bzr|cvs):*' branchformat '%b:r%r'
 zstyle ':vcs_info:bzr:*' use-simple true
