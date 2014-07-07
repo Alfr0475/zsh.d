@@ -454,6 +454,19 @@ function printpath {
     done
 }
 
+# 引数のコマンドを数秒間隔で実行
+function loopwatch {
+    # 無限ループして処理
+    while true
+    do
+        date
+        echo
+        $*
+        sleep 5;
+        clear
+    done
+}
+
 function color256 {
     for code in {000..255};
     do
