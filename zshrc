@@ -94,7 +94,7 @@ setopt pushd_ignore_dups
 setopt extended_glob
 
 # ディレクトリ名の補完で末尾の / を自動的に付加し、次の補完に備える
-setopt auto_param_slash
+#setopt auto_param_slash
 
 # カッコの対応などを自動的に補完
 setopt auto_param_keys
@@ -138,6 +138,51 @@ zstyle ':completion:*:default' menu select=1
 
 # 色指定にLS_COLORSを使用
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+
+
+#---------------------------------------
+# auto-fu.zsh
+#---------------------------------------
+if [ -f $HOME/.zsh.d/modules/auto-fu.zsh/auto-fu.zsh ]; then
+    source $HOME/.zsh.d/modules/auto-fu.zsh/auto-fu.zsh
+    function zle-line-init () {
+        auto-fu-init
+    }
+    zle -N zle-line-init
+    zstyle ':completion:*' completer _oldlist _complete
+    # 「-azfu-」を表示させない
+    zstyle ':auto-fu:var' postdisplay $''
+fi
+
+# http://d.hatena.ne.jp/tarao/20100823/1282543408
+# delete unambiguous prefix when accepting line
+function afu+delete-unambiguous-prefix () {
+    afu-clearing-maybe
+    local buf; buf="$BUFFER"
+    local bufc; bufc="$buffer_cur"
+    [[ -z "$cursor_new" ]] && cursor_new=-1
+    [[ "$buf[$cursor_new]" == ' ' ]] && return
+    [[ "$buf[$cursor_new]" == '/' ]] && return
+    ((afu_in_p == 1)) && [[ "$buf" != "$bufc" ]] && {
+        # there are more than one completion candidates
+        zle afu+complete-word
+        [[ "$buf" == "$BUFFER" ]] && {
+            # the completion suffix was an unambiguous prefix
+            afu_in_p=0; buf="$bufc"
+        }
+        BUFFER="$buf"
+        buffer_cur="$bufc"
+    }
+}
+zle -N afu+delete-unambiguous-prefix
+function afu-ad-delete-unambiguous-prefix () {
+    local afufun="$1"
+    local code; code=$functions[$afufun]
+    eval "function $afufun () { zle afu+delete-unambiguous-prefix; $code }"
+}
+afu-ad-delete-unambiguous-prefix afu+accept-line
+afu-ad-delete-unambiguous-prefix afu+accept-line-and-down-history
+afu-ad-delete-unambiguous-prefix afu+accept-and-hold
 
 
 #---------------------------------------
