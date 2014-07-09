@@ -20,7 +20,7 @@ typeset -U path cdpath fpath manpath
 
 if [ `uname` = "Linux" ]; then
 elif [ `uname` = "Darwin" ]; then
-    fpath=($(brew --prefix)/share/zsh/site-functions ~/.zsh.d/completions(N-/) ~/.zsh.d/modules/zsh-completions/src(N-/) ~/.tmuxinator/completions(N-/) $fpath)
+    fpath=($(brew --prefix)/share/zsh/site-functions ~/.zsh.d/completions(N-/) ~/.zsh.d/modules/zsh-completions/src(N-/) ~/.tmuxinator/completions(N-/) ~/.zsh.d/modules/tw-zsh-completion(N-/) $fpath)
     path=($GOPATH/bin(N-/) ~/bin(N-/) /usr/local/bin(N-/) $path)
 fi
 

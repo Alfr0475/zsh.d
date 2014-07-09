@@ -4,3 +4,6 @@
 [submodule "modules/auto-fu.zsh"]
 	path = modules/auto-fu.zsh
 	url = https://github.com/hchbaw/auto-fu.zsh.git
+[submodule "modules/tw-zsh-completion"]
+	path = modules/tw-zsh-completion
+	url = https://github.com/glidenote/tw-zsh-completion.git
