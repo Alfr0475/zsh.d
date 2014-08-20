@@ -455,6 +455,11 @@ elif [ `uname` = "Darwin" ]; then
     if which pyenv > /dev/null; then
         eval "$(pyenv init -)";
     fi
+
+    # plenvの設定
+    if which plenv > /dev/null; then
+        eval "$(plenv init -)";
+    fi
 fi
 
 #------------------------------------------------------------------------------
