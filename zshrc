@@ -440,6 +440,10 @@ elif [ `uname` = "Darwin" ]; then
     alias vi="vim"
     alias grep="grep --color"
 
+    if which dfc > /dev/null; then
+        alias df="dfc"
+    fi
+
     # phpenvの設定
     if [ -e ~/.phpenv ]; then
         path=($HOME/.phpenv/bin(N-/) $path)
