@@ -8,3 +8,7 @@ fi
 export EDITOR=/usr/local/bin/vim
 export GOPATH=$HOME/work/go
 
+if which source-highlight > /dev/null; then
+    export LESS='-R'
+    export LESSOPEN='| /usr/local/bin/src-hilite-lesspipe.sh %s'
+fi
