@@ -6,7 +6,7 @@ if [ -x /usr/libexec/path_helper ]; then
 fi
 
 export EDITOR=/usr/local/bin/vim
-export GOPATH=$HOME/work/go
+export GOPATH=$HOME/work/sources/go
 
 if which source-highlight > /dev/null; then
     export LESS='-R'
