@@ -549,6 +549,32 @@ function loopwatch {
     done
 }
 
+function is-git-repository {
+    if git rev-parse 2> /dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+function is-git-remote {
+    if git remote show $1 2> /dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+function update-fork-repository-git {
+    if is-git-repository; then
+        if is-git-remote upstream; then
+            git checkout develop
+            git pull upstream develop
+            git push origin develop
+        fi
+    fi
+}
+
 function color256 {
     for code in {000..255};
     do
