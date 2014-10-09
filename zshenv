@@ -5,7 +5,9 @@ if [ -x /usr/libexec/path_helper ]; then
     eval `/usr/libexec/path_helper -s`
 fi
 
-export EDITOR=/usr/local/bin/vim
+# export EDITOR=/usr/local/bin/vim
+export EDITOR='emacsclient -nw -a ""'
+export VISUAL='emacsclient -nw -a ""'
 export GOPATH=$HOME/work/sources/go
 
 if which source-highlight > /dev/null; then
