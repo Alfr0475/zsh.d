@@ -24,6 +24,13 @@ elif [ `uname` = "Darwin" ]; then
     path=($(brew --prefix coreutils)/libexec/gnubin(N-/) $GOPATH/bin(N-/) ~/bin(N-/) /usr/local/bin(N-/) $path)
 fi
 
+#---------------------------------------
+# zaw.zsh
+#---------------------------------------
+if [ -f $HOME/.zsh.d/modules/zaw/zaw.zsh ]; then
+    source $HOME/.zsh.d/modules/zaw/zaw.zsh
+fi
+
 #------------------------------------------------------------------------------
 # 基本
 #------------------------------------------------------------------------------

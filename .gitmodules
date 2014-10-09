@@ -7,3 +7,6 @@
 [submodule "modules/tw-zsh-completion"]
 	path = modules/tw-zsh-completion
 	url = https://github.com/glidenote/tw-zsh-completion.git
+[submodule "modules/zaw"]
+	path = modules/zaw
+	url = https://github.com/zsh-users/zaw.git
