@@ -139,6 +139,9 @@ zstyle ':completion:*:default' menu select=1
 # 色指定にLS_COLORSを使用
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 
+# 除外設定
+zstyle ':completion:*:*files' ignored-patterns '*?~' '*\#'
+
 
 #---------------------------------------
 # auto-fu.zsh
