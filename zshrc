@@ -21,7 +21,7 @@ typeset -U path cdpath fpath manpath
 if [ `uname` = "Linux" ]; then
 elif [ `uname` = "Darwin" ]; then
     fpath=($(brew --prefix)/share/zsh/site-functions ~/.zsh.d/completions(N-/) ~/.zsh.d/modules/zsh-completions/src(N-/) ~/.tmuxinator/completions(N-/) ~/.zsh.d/modules/tw-zsh-completion(N-/) $fpath)
-    path=($GOPATH/bin(N-/) ~/bin(N-/) /usr/local/bin(N-/) $path)
+    path=($(brew --prefix coreutils)/libexec/gnubin(N-/) $GOPATH/bin(N-/) ~/bin(N-/) /usr/local/bin(N-/) $path)
 fi
 
 #------------------------------------------------------------------------------
@@ -438,8 +438,14 @@ if [ `uname` = "Linux" ]; then
     alias ll="ls -l --color=tty"
     alias la="ls -al --color=tty"
 elif [ `uname` = "Darwin" ]; then
-    alias ll="ls -lG"
-    alias la="ls -alG"
+    if ! [ `which ls` = '/bin/ls' ]; then
+        alias ll="ls -l --color=tty"
+        alias la="ls -al --color=tty"
+    else
+        alias ll="ls -lG"
+        alias la="ls -alG"
+    fi
+
     alias vi="vim"
     alias grep="grep --color"
 
