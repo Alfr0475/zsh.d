@@ -21,7 +21,8 @@ typeset -U path cdpath fpath manpath
 if [ `uname` = "Linux" ]; then
 elif [ `uname` = "Darwin" ]; then
     fpath=($(brew --prefix)/share/zsh/site-functions ~/.zsh.d/completions(N-/) ~/.zsh.d/modules/zsh-completions/src(N-/) ~/.tmuxinator/completions(N-/) ~/.zsh.d/modules/tw-zsh-completion(N-/) $fpath)
-    path=($(brew --prefix coreutils)/libexec/gnubin(N-/) $GOPATH/bin(N-/) ~/bin(N-/) /usr/local/bin(N-/) $path)
+    #path=($(brew --prefix coreutils)/libexec/gnubin(N-/) $GOPATH/bin(N-/) ~/bin(N-/) /usr/local/bin(N-/) $COCOS_CONSOLE_ROOT $COCOS_TEMPLATES_ROOT $path)
+    path=($GOPATH/bin(N-/) ~/bin(N-/) /usr/local/bin(N-/) $COCOS_CONSOLE_ROOT $COCOS_TEMPLATES_ROOT $path)
 fi
 
 #---------------------------------------
@@ -83,7 +84,7 @@ bindkey "^N" history-beginning-search-forward-end
 # 補完
 #------------------------------------------------------------------------------
 # 入力しているコマンド名が間違っている場合にもしかして：を出す。
-setopt correct
+#setopt correct
 
 # タブによるファイルの順番切り替えをしない
 unsetopt auto_menu
@@ -113,7 +114,7 @@ setopt mark_dirs
 setopt list_types
 
 # コマンドラインでも # 以降をコメントと見なす
-setopt interactive_comments
+#setopt interactive_comments
 
 # コマンドラインの引数で --prefix=/usr などの = 以降でも補完できる
 setopt magic_equal_subst
@@ -458,6 +459,7 @@ elif [ `uname` = "Darwin" ]; then
 
     alias vi="vim"
     alias grep="grep --color"
+    alias updatedb="sudo /usr/libexec/locate.updatedb"
 
     if which dfc > /dev/null; then
         alias df="dfc"
