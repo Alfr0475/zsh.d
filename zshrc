@@ -32,6 +32,13 @@ if [ -f $HOME/.zsh.d/modules/zaw/zaw.zsh ]; then
     source $HOME/.zsh.d/modules/zaw/zaw.zsh
 fi
 
+#---------------------------------------
+# zsh-notify
+#---------------------------------------
+if [ -f $HOME/.zsh.d/modules/zsh-notify/notify.plugin.zsh ]; then
+    source $HOME/.zsh.d/modules/zsh-notify/notify.plugin.zsh
+fi
+
 #------------------------------------------------------------------------------
 # 基本
 #------------------------------------------------------------------------------

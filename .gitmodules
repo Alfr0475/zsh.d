@@ -10,3 +10,6 @@
 [submodule "modules/zaw"]
 	path = modules/zaw
 	url = https://github.com/zsh-users/zaw.git
+[submodule "modules/zsh-notify"]
+	path = modules/zsh-notify
+	url = https://github.com/marzocchi/zsh-notify
