@@ -46,3 +46,12 @@ if [ -d /opt/cocos2d-x/current ]; then
     export COCOS_CONSOLE_ROOT=/opt/cocos2d-x/current/tools/cocos2d-console/bin
     export COCOS_TEMPLATES_ROOT=/opt/cocos2d-x/current/templates
 fi
+
+#------------------------------------------------------------------------------
+# Javaのバージョン指定
+if is_mac; then
+    if [ -x /usr/libexec/java_home ]; then
+        export JAVA_HOME=`/usr/libexec/java_home -v "1.7"`
+    fi
+fi
+#------------------------------------------------------------------------------
