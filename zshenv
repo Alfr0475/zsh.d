@@ -5,6 +5,27 @@ if [ -x /usr/libexec/path_helper ]; then
     eval `/usr/libexec/path_helper -s`
 fi
 
+
+#------------------------------------------------------------------------------
+# 各種OS判別関数
+function is_mac {
+    if [ `uname` = "Darwin" ]; then
+        return 0
+    fi
+
+    return 1
+}
+
+function is_linux {
+    if [ `uname` = "Linux" ]; then
+        return 0
+    fi
+
+    return 1
+}
+#------------------------------------------------------------------------------
+
+
 # export EDITOR=/usr/local/bin/vim
 export EDITOR='emacsclient -nw -a ""'
 export VISUAL='emacsclient -nw -a ""'
