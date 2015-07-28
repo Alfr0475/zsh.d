@@ -149,13 +149,16 @@ setopt nolistbeep
 # predict-on
 
 # カーソルによる補完候補の選択を有効化
-zstyle ':completion:*:default' menu select=1
+zstyle ':completion:*:default' menu select=2
 
 # 色指定にLS_COLORSを使用
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 
 # 除外設定
 zstyle ':completion:*:*files' ignored-patterns '*?~' '*\#'
+
+# 補完候補のキャッシュ
+zstyle ':completion:*' use-cache true
 
 
 #---------------------------------------
