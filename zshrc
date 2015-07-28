@@ -617,6 +617,10 @@ function tmux-pbcopy {
     tmux display-message "Copy: $LINES lines"
 }
 
+function showzshoptions {
+    set -o | sed -e 's/^no\(.*\)on$/\1  off/' -e 's/^no\(.*\)off$/\1  on/'
+}
+
 function color256 {
     for code in {000..255};
     do
