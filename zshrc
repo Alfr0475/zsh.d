@@ -25,6 +25,15 @@ elif [ `uname` = "Darwin" ]; then
     path=($GOPATH/bin(N-/) ~/bin(N-/) /usr/local/bin(N-/) $COCOS_CONSOLE_ROOT $COCOS_TEMPLATES_ROOT $JAVA_HOME/bin(N-/) $path)
 fi
 
+
+
+#---------------------------------------
+# zplug
+#---------------------------------------
+if [ -f $HOME/.zplug/zplug ]; then
+    source $HOME/.zplug/zplug
+fi
+
 #---------------------------------------
 # zaw.zsh
 #---------------------------------------
@@ -86,6 +95,21 @@ zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
 bindkey "^P" history-beginning-search-backward-end
 bindkey "^N" history-beginning-search-forward-end
+
+# Ctrl + r のhistoryをpeco対応にする
+function __peco-select-history() {
+    local tac
+    if which tac > /dev/null; then
+        tac="tac"
+    else
+        tac="tail -r"
+    fi
+    BUFFER=$(\history -n 1 | eval $tac | peco --query "$LBUFFER")
+    CURSOR=$#BUFFER
+    zle clear-screen
+}
+zle -N __peco-select-history
+bindkey '^r' __peco-select-history
 
 #------------------------------------------------------------------------------
 # 補完
@@ -365,16 +389,16 @@ setopt prompt_subst
 setopt transient_rprompt
 
 # 左側のプロンプトを構成する関数
-function left_prompt {
-    local formatted_upper_prompt="`prompt_get_path`"$'\n'
-    local formatted_under_prompt="`prompt_get_user`@`prompt_get_host`"
+function __left_prompt {
+    local formatted_upper_prompt="`__prompt_get_path`"$'\n'
+    local formatted_under_prompt="`__prompt_get_user`@`__prompt_get_host`"
 
-    local formatted_tmux_display="`prompt_get_tmux_display`"
+    local formatted_tmux_display="`__prompt_get_tmux_display`"
     if [ -n "$formatted_tmux_display" ]; then
         formatted_under_prompt="$formatted_under_prompt $formatted_tmux_display"
     fi
 
-    formatted_under_prompt="$formatted_under_prompt `prompt_get_mark`"
+    formatted_under_prompt="$formatted_under_prompt `__prompt_get_mark`"
     local formatted_prompt=" $formatted_upper_prompt$formatted_under_prompt "
 
     # 左側のプロンプト
@@ -382,8 +406,8 @@ function left_prompt {
 }
 
 # 右側のプロンプトを構成する関数
-function right_prompt {
-    local formatted_prompt="`prompt_get_vcs_info_msg`"
+function __right_prompt {
+    local formatted_prompt="`__prompt_get_vcs_info_msg`"
 
     # 右側のプロンプト
     RPROMPT="$formatted_prompt"
@@ -393,22 +417,22 @@ function right_prompt {
 # 各種要素を構成する関数
 #---------------------------------------
 # カレントディレクトリ
-function prompt_get_path {
+function __prompt_get_path {
     echo "%F{012}[%~]%f"
 }
 
 # ユーザー名
-function prompt_get_user {
+function __prompt_get_user {
     echo "%n"
 }
 
 # ホスト名
-function prompt_get_host {
+function __prompt_get_host {
     echo "%m"
 }
 
 # プロンプトマーク
-function prompt_get_mark {
+function __prompt_get_mark {
     # %(,,)はif...then...else..の意味
     # !はここでは特権ユーザーの判定
     # %B...%bは太字
@@ -418,7 +442,7 @@ function prompt_get_mark {
 }
 
 # VCS情報
-function prompt_get_vcs_info_msg {
+function __prompt_get_vcs_info_msg {
     local -a messages
 
     LANG=en_US.UTF-8 vcs_info
@@ -440,14 +464,21 @@ function prompt_get_vcs_info_msg {
 }
 
 # tmux情報
-function prompt_get_tmux_display {
+function __prompt_get_tmux_display {
     if [ -n "$TMUX" ]; then
         echo "%F{blue}`tmux display -p "#I-#P"`%f"
     fi
 }
 
-add-zsh-hook precmd left_prompt
-add-zsh-hook precmd right_prompt
+add-zsh-hook precmd __left_prompt
+add-zsh-hook precmd __right_prompt
+
+#------------------------------------------------------------------------------
+# ユーティリティ
+#------------------------------------------------------------------------------
+if [ -e $HOME/.zsh.d/zshfunction ]; then
+    source $HOME/.zsh.d/zshfunction
+fi
 
 #------------------------------------------------------------------------------
 # エイリアス
@@ -495,280 +526,18 @@ elif [ `uname` = "Darwin" ]; then
     if which plenv > /dev/null; then
         eval "$(plenv init -)";
     fi
+
+    # Utilityのalias
+    alias look="__look"
+    alias title="__title"
+    alias tmux_powerline_theme="__tmux_powerline_theme"
+    alias printpath="__printpath"
+    alias loopwatch="__loopwatch"
+    alias update-fork-repository-git="__update-fork-repository-git"
+    alias tmux-pbcopy="__tmux_pbcopy"
+    alias showzshoptions="__showzshoptions"
+    alias color256="__color256"
+    alias color16="__color16"
+    alias snowfall="__snowfall"
+    alias matrix="__matrix"
 fi
-
-#------------------------------------------------------------------------------
-# ユーティリティ
-#------------------------------------------------------------------------------
-# iTerm2のタブ名を変更する
-function title {
-    echo -ne "\033]0;"$* "\007"
-}
-
-# tmuxのテーマを選択する
-function tmux_powerline_theme {
-    if ! [ -n "$TMUX" ]; then
-        echo "not run tmux."
-        return
-    fi
-
-    case "$1" in
-        "-l" | "--list" )
-            for theme in `ls -1 $HOME/.tmux.d/tmux-powerline/themes`
-            do
-                if [ "`basename $theme .sh`" = "`tmux show-environment -g TMUX_POWERLINE_THEME | sed -e 's/TMUX_POWERLINE_THEME=//'`" ]; then
-                    echo "*`basename $theme .sh`"
-                else
-                    echo " `basename $theme .sh`"
-                fi
-            done
-            ;;
-        *)
-            if [ -e "$HOME/.tmux.d/tmux-powerline/themes/$1.sh" -o -L "$HOME/.tmux.d/tmux-powerline/themes/$1.sh" ]; then
-                tmux set-environment -g TMUX_POWERLINE_THEME $1
-            fi
-            ;;
-    esac
-}
-
-# pathを整形して出力
-function printpath {
-    for path_string in $path
-    do
-        echo $path_string
-    done
-}
-
-# 引数のコマンドを数秒間隔で実行
-function loopwatch {
-    local usage="Usage: $0 [-s 5] COMMAND"
-    local enable_s=""
-    local s_looptime=5
-
-    while getopts :s: opt; do
-        case ${opt} in
-            s)
-                # 数値チェック
-                if [[ -z `echo ${OPTARG} | egrep "[0-9]+$"` ]]; then
-                    echo $usage
-                    return
-                fi
-                # 有効数値チェック
-                if [ ${OPTARG} -le 0 ]; then
-                    echo $usage
-                    return
-                fi
-                s_looptime=${OPTARG}
-                ;;
-            *)
-                echo $usage
-                return
-                ;;
-        esac
-    done
-
-    shift $((OPTIND-1))
-
-    # 無限ループして処理
-    while true
-    do
-        clear
-        date
-        echo
-        $*
-        `sleep ${s_looptime}`;
-    done
-}
-
-function is-git-repository {
-    if git rev-parse 2> /dev/null; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-function is-git-remote {
-    if git remote show $1 2> /dev/null; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-function update-fork-repository-git {
-    if is-git-repository; then
-        if is-git-remote upstream; then
-            git checkout develop
-            git pull upstream develop
-            git push origin develop
-        fi
-    fi
-}
-
-function tmux-pbcopy {
-    if ! type pbcopy >/dev/null 2>&1 || ! type reattach-to-user-namespace >/dev/null 2>&1; then
-        tmux display-message "Error: cannot copy to clipboard."
-        exit 0
-    fi
-
-    COPY=`tmux save-buffer -`
-    echo "$COPY" | reattach-to-user-namespace pbcopy
-
-    # メッセージ表示
-    LINES=`echo "$COPY" | wc -l | tr -d ' '`
-    tmux display-message "Copy: $LINES lines"
-}
-
-function showzshoptions {
-    set -o | sed -e 's/^no\(.*\)on$/\1  off/' -e 's/^no\(.*\)off$/\1  on/'
-}
-
-function color256 {
-    for code in {000..255};
-    do
-        print -nP -- "%F{$code}$code %f"; [ $((${code} % 16)) -eq 15 ] && echo;
-    done
-}
-
-function color16 {
-    echo " On White(47)     On Black(40)     On Default     Color Code"
-
-    echo -e "\
-\033[47m\033[1;37m  White        \033[0m  \
-\033[40m\033[1;37m  White        \033[0m  \
-\033[1;37m  White        \033[0m\
-  1;37\
-"
-
-    echo -e "\
-\033[47m\033[37m  Light Gray   \033[0m  \
-\033[40m\033[37m  Light Gray   \033[0m  \
-\033[37m  Light Gray   \033[0m  \
-37\
-"
-
-    echo -e "\
-\033[47m\033[1;30m  Gray         \033[0m  \
-\033[40m\033[1;30m  Gray         \033[0m  \
-\033[1;30m  Gray         \033[0m  \
-1;30\
-"
-
-    echo -e "\
-\033[47m\033[30m  Black        \033[0m  \
-\033[40m\033[30m  Black        \033[0m  \
-\033[30m  Black        \033[0m  \
-30\
-"
-
-    echo -e "\
-\033[47m\033[31m  Red          \033[0m  \
-\033[40m\033[31m  Red          \033[0m  \
-\033[31m  Red          \033[0m  \
-31\
-"
-
-    echo -e "\
-\033[47m\033[1;31m  Light Red    \033[0m  \
-\033[40m\033[1;31m  Light Red    \033[0m  \
-\033[1;31m  Light Red    \033[0m  \
-1;31\
-"
-
-    echo -e "\
-\033[47m\033[32m  Green        \033[0m  \
-\033[40m\033[32m  Green        \033[0m  \
-\033[32m  Green        \033[0m  \
-32\
-"
-
-    echo -e "\
-\033[47m\033[1;32m  Light Green  \033[0m  \
-\033[40m\033[1;32m  Light Green  \033[0m  \
-\033[1;32m  Light Green  \033[0m  \
-1;32\
-"
-
-    echo -e "\
-\033[47m\033[33m  Brown        \033[0m  \
-\033[40m\033[33m  Brown        \033[0m  \
-\033[33m  Brown        \033[0m  \
-33\
-"
-
-    echo -e "\
-\033[47m\033[1;33m  Yellow       \033[0m  \
-\033[40m\033[1;33m  Yellow       \033[0m  \
-\033[1;33m  Yellow       \033[0m  \
-1;33\
-"
-
-    echo -e "\
-\033[47m\033[34m  Blue         \033[0m  \
-\033[40m\033[34m  Blue         \033[0m  \
-\033[34m  Blue         \033[0m  \
-34\
-"
-
-    echo -e "\
-\033[47m\033[1;34m  Light Blue   \033[0m  \
-\033[40m\033[1;34m  Light Blue   \033[0m  \
-\033[1;34m  Light Blue   \033[0m  \
-1;34\
-"
-
-    echo -e "\
-\033[47m\033[35m  Purple       \033[0m  \
-\033[40m\033[35m  Purple       \033[0m  \
-\033[35m  Purple       \033[0m  \
-35\
-"
-
-    echo -e "\
-\033[47m\033[1;35m  Pink         \033[0m  \
-\033[40m\033[1;35m  Pink         \033[0m  \
-\033[1;35m  Pink         \033[0m  \
-1;35\
-"
-
-    echo -e "\
-\033[47m\033[36m  Cyan         \033[0m  \
-\033[40m\033[36m  Cyan         \033[0m  \
-\033[36m  Cyan         \033[0m  \
-36\
-"
-
-    echo -e "\
-\033[47m\033[1;36m  Light Cyan   \033[0m  \
-\033[40m\033[1;36m  Light Cyan   \033[0m  \
-\033[1;36m  Light Cyan   \033[0m  \
-1;36\
-"
-}
-
-#------------------------------------------------------------------------------
-# ネタ
-#------------------------------------------------------------------------------
-# 雪を降らせる
-# http://orebibou.com/2014/08/%E5%BD%B9%E3%81%AB%E3%81%AF%E7%AB%8B%E3%81%9F%E3%81%AA%E3%81%84%E3%81%91%E3%81%A9%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E3%81%A0%E3%81%91%E9%9D%A2%E7%99%BD%E3%81%84linux%E3%81%AE%E3%82%BF%E3%83%BC/
-function snowfall {
-    clear;
-    while :;
-    do
-        echo $LINES $COLUMNS $(($RANDOM%$COLUMNS));
-        sleep 0.1;
-    done|gawk '{a[$3]=0;for(x in a) {o=a[x];a[x]=a[x]+1;printf "\033[%s;%sH ",o,x;printf "\033[%s;%sH*\033[0;0H",a[x],x;}}'
-}
-
-# Matrixっぽい演出
-# http://orebibou.com/2014/08/%E5%BD%B9%E3%81%AB%E3%81%AF%E7%AB%8B%E3%81%9F%E3%81%AA%E3%81%84%E3%81%91%E3%81%A9%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E3%81%A0%E3%81%91%E9%9D%A2%E7%99%BD%E3%81%84linux%E3%81%AE%E3%82%BF%E3%83%BC/
-function matrix {
-    echo -e "\e[1;40m" ;
-    clear ;
-    while :;
-    do
-        echo $LINES $COLUMNS $(( $RANDOM % $COLUMNS)) $(( $RANDOM % 72 )) ;
-        sleep 0.05;
-    done|gawk '{ letters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()"; c=$4; letter=substr(letters,c,1);a[$3]=0;for (x in a) {o=a[x];a[x]=a[x]+1; printf "\033[%s;%sH\033[2;32m%s",o,x,letter; printf "\033[%s;%sH\033[1;37m%s\033[0;0H",a[x],x,letter;if (a[x] >= $1) { a[x]=0; } }}'
-}
