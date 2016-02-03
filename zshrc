@@ -506,25 +506,22 @@ elif [ `uname` = "Darwin" ]; then
         alias df="dfc"
     fi
 
-    # phpenvの設定
-    if [ -e ~/.phpenv ]; then
-        path=($HOME/.phpenv/bin(N-/) $path)
-        eval "$(phpenv init -)"
+    if which trash > /dev/null; then
+        alias rm="trash"
     fi
 
-    # rbenvの設定
-    if which rbenv > /dev/null; then
-        eval "$(rbenv init -)";
+    # anyenvの設定
+    if [ -d $HOME/.anyenv ]; then
+        path=($HOME/.anyenv/bin(N-/) $path)
+        eval "$(anyenv init -)"
+        for D in `ls $HOME/.anyenv/envs`
+        do
+            path=($HOME/.anyenv/envs/$D/shims(N-/) $path)
+        done
     fi
 
-    # pyenvの設定
-    if which pyenv > /dev/null; then
-        eval "$(pyenv init -)";
-    fi
-
-    # plenvの設定
-    if which plenv > /dev/null; then
-        eval "$(plenv init -)";
+    if which peco > /dev/null; then
+        alias pg='cd $(ghq list -p | peco --prompt "REPOSITORY >" --query "$LBUFFER")'
     fi
 
     # Utilityのalias

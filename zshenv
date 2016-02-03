@@ -29,7 +29,7 @@ function is_linux {
 # export EDITOR=/usr/local/bin/vim
 export EDITOR='emacsclient -nw -a ""'
 export VISUAL='emacsclient -nw -a ""'
-export GOPATH=$HOME/work/sources/go
+export GOPATH=$HOME/work/sources
 
 if which source-highlight > /dev/null; then
     export LESS='-R'
