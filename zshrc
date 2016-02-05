@@ -524,6 +524,19 @@ elif [ `uname` = "Darwin" ]; then
         alias pg='cd $(ghq list -p | peco --prompt "REPOSITORY >" --query "$LBUFFER")'
     fi
 
+    #---------------------------------------
+    # ssh
+    #---------------------------------------
+    # 背景を変える
+    if [ -f $HOME/bin/ssh_change_bgcolor.sh ]; then
+        alias ssh="ssh_change_bgcolor.sh"
+    fi
+
+    # プロファイルを変える
+    # if [ -f $HOME/bin/ssh_change_profile.sh ]; then
+    #     alias ssh="ssh_change_profile.sh"
+    # fi
+
     # Utilityのalias
     alias look="__look"
     alias title="__title"
