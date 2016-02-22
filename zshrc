@@ -34,19 +34,23 @@ if [ -f $HOME/.zplug/zplug ]; then
     source $HOME/.zplug/zplug
 fi
 
-#---------------------------------------
-# zaw.zsh
-#---------------------------------------
-if [ -f $HOME/.zsh.d/modules/zaw/zaw.zsh ]; then
-    source $HOME/.zsh.d/modules/zaw/zaw.zsh
+# zsh-completions
+zplug "zsh-users/zsh-completions"
+
+# enhancd
+zplug "b4b4r07/enhancd", of:enhancd.sh
+
+# zsh-syntax-highlighting
+zplug "zsh-users/zsh-syntax-highlighting", nice:10
+
+if ! zplug check --verbose; then
+    printf "Install? [y/N]: "
+    if read -q; then
+        echo; zplug install
+    fi
 fi
 
-#---------------------------------------
-# zsh-notify
-#---------------------------------------
-if [ -f $HOME/.zsh.d/modules/zsh-notify/notify.plugin.zsh ]; then
-    source $HOME/.zsh.d/modules/zsh-notify/notify.plugin.zsh
-fi
+zplug load --verbose
 
 #------------------------------------------------------------------------------
 # 基本
@@ -185,59 +189,54 @@ zstyle ':completion:*:*files' ignored-patterns '*?~' '*\#'
 zstyle ':completion:*' use-cache true
 
 
-#---------------------------------------
-# auto-fu.zsh
-#---------------------------------------
-if [ -f $HOME/.zsh.d/modules/auto-fu.zsh/auto-fu.zsh ]; then
-    source $HOME/.zsh.d/modules/auto-fu.zsh/auto-fu.zsh
-    function zle-line-init () {
-        auto-fu-init
-    }
-    zle -N zle-line-init
-    zstyle ':completion:*' completer _oldlist _complete
-    # 「-azfu-」を表示させない
-    zstyle ':auto-fu:var' postdisplay $''
-fi
+# #---------------------------------------
+# # auto-fu.zsh
+# #---------------------------------------
+# if [ -f $HOME/.zsh.d/modules/auto-fu.zsh/auto-fu.zsh ]; then
+#     source $HOME/.zsh.d/modules/auto-fu.zsh/auto-fu.zsh
+#     function zle-line-init () {
+#         auto-fu-init
+#     }
+#     zle -N zle-line-init
+#     zstyle ':completion:*' completer _oldlist _complete
+#     # 「-azfu-」を表示させない
+#     zstyle ':auto-fu:var' postdisplay $''
+# fi
 
-# http://d.hatena.ne.jp/tarao/20100823/1282543408
-# delete unambiguous prefix when accepting line
-function afu+delete-unambiguous-prefix () {
-    afu-clearing-maybe
-    local buf; buf="$BUFFER"
-    local bufc; bufc="$buffer_cur"
-    [[ -z "$cursor_new" ]] && cursor_new=-1
-    [[ "$buf[$cursor_new]" == ' ' ]] && return
-    [[ "$buf[$cursor_new]" == '/' ]] && return
-    ((afu_in_p == 1)) && [[ "$buf" != "$bufc" ]] && {
-        # there are more than one completion candidates
-        zle afu+complete-word
-        [[ "$buf" == "$BUFFER" ]] && {
-            # the completion suffix was an unambiguous prefix
-            afu_in_p=0; buf="$bufc"
-        }
-        BUFFER="$buf"
-        buffer_cur="$bufc"
-    }
-}
-zle -N afu+delete-unambiguous-prefix
-function afu-ad-delete-unambiguous-prefix () {
-    local afufun="$1"
-    local code; code=$functions[$afufun]
-    eval "function $afufun () { zle afu+delete-unambiguous-prefix; $code }"
-}
-afu-ad-delete-unambiguous-prefix afu+accept-line
-afu-ad-delete-unambiguous-prefix afu+accept-line-and-down-history
-afu-ad-delete-unambiguous-prefix afu+accept-and-hold
+# # http://d.hatena.ne.jp/tarao/20100823/1282543408
+# # delete unambiguous prefix when accepting line
+# function afu+delete-unambiguous-prefix () {
+#     afu-clearing-maybe
+#     local buf; buf="$BUFFER"
+#     local bufc; bufc="$buffer_cur"
+#     [[ -z "$cursor_new" ]] && cursor_new=-1
+#     [[ "$buf[$cursor_new]" == ' ' ]] && return
+#     [[ "$buf[$cursor_new]" == '/' ]] && return
+#     ((afu_in_p == 1)) && [[ "$buf" != "$bufc" ]] && {
+#         # there are more than one completion candidates
+#         zle afu+complete-word
+#         [[ "$buf" == "$BUFFER" ]] && {
+#             # the completion suffix was an unambiguous prefix
+#             afu_in_p=0; buf="$bufc"
+#         }
+#         BUFFER="$buf"
+#         buffer_cur="$bufc"
+#     }
+# }
+# zle -N afu+delete-unambiguous-prefix
+# function afu-ad-delete-unambiguous-prefix () {
+#     local afufun="$1"
+#     local code; code=$functions[$afufun]
+#     eval "function $afufun () { zle afu+delete-unambiguous-prefix; $code }"
+# }
+# afu-ad-delete-unambiguous-prefix afu+accept-line
+# afu-ad-delete-unambiguous-prefix afu+accept-line-and-down-history
+# afu-ad-delete-unambiguous-prefix afu+accept-and-hold
 
 
 #---------------------------------------
 # 補完候補の追加
 #---------------------------------------
-# zsh-completions
-if is-at-least 4.3.10 && [ -d $HOME/.zsh.d/modules/zsh-completions ]; then
-    fpath=($HOME/.zsh.d/modules/zsh-completions/src $fpath)
-fi
-
 # rbenv
 if is-at-least 4.3.10 && [ -d $HOME/.rbenv/completions/rbenv.zsh ]; then
     fpath=($HOME/.rbenv/completions/rbenv.zsh $fpath)
@@ -487,7 +486,8 @@ if [ `uname` = "Linux" ]; then
     alias ll="ls -l --color=tty"
     alias la="ls -al --color=tty"
 elif [ `uname` = "Darwin" ]; then
-    if ! [ `which ls` = '/bin/ls' ]; then
+    if which gls > /dev/null; then
+        alias ls="gls"
         alias ll="ls -l --color=tty"
         alias la="ls -al --color=tty"
     else
@@ -528,13 +528,13 @@ elif [ `uname` = "Darwin" ]; then
     # ssh
     #---------------------------------------
     # 背景を変える
-    if [ -f $HOME/bin/ssh_change_bgcolor.sh ]; then
-        alias ssh="ssh_change_bgcolor.sh"
+    if [ -f $HOME/bin/ssh_change_bgcolor ]; then
+        alias ssh="ssh_change_bgcolor"
     fi
 
     # プロファイルを変える
-    # if [ -f $HOME/bin/ssh_change_profile.sh ]; then
-    #     alias ssh="ssh_change_profile.sh"
+    # if [ -f $HOME/bin/ssh_change_profile ]; then
+    #     alias ssh="ssh_change_profile"
     # fi
 
     # Utilityのalias
