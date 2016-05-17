@@ -522,6 +522,10 @@ elif [ `uname` = "Darwin" ]; then
 
     if which peco > /dev/null; then
         alias pg='cd $(ghq list -p | peco --prompt "REPOSITORY >" --query "$LBUFFER")'
+
+        # Git系便利コマンド peco Ver.
+        alias -g B='`git branch -a | peco --prompt "GIT BRANCH >" | head -n 1 | sed -e "s/^\*\s*//g"`'
+        alias -g R='`git remote | peco --prompt "GIT REMOTE >" | head -n 1`'
     fi
 
     #---------------------------------------
