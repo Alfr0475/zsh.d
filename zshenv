@@ -30,6 +30,7 @@ function is_linux {
 export EDITOR='emacsclient -nw -a ""'
 export VISUAL='emacsclient -nw -a ""'
 export GOPATH=$HOME/work/sources
+export ZPLUG_HOME=/usr/local/opt/zplug
 
 if which source-highlight > /dev/null; then
     export LESS='-R'

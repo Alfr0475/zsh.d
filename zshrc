@@ -20,7 +20,7 @@ typeset -U path cdpath fpath manpath
 
 if [ `uname` = "Linux" ]; then
 elif [ `uname` = "Darwin" ]; then
-    fpath=($(brew --prefix)/share/zsh/site-functions ~/.zsh.d/completions(N-/) ~/.zsh.d/modules/zsh-completions/src(N-/) ~/.tmuxinator/completions(N-/) ~/.zsh.d/modules/tw-zsh-completion(N-/) $fpath)
+    fpath=($(brew --prefix)/share/zsh/site-functions ~/.zsh.d/completions(N-/) ~/.tmuxinator/completions(N-/) $fpath)
     #path=($(brew --prefix coreutils)/libexec/gnubin(N-/) $GOPATH/bin(N-/) ~/bin(N-/) /usr/local/bin(N-/) $COCOS_CONSOLE_ROOT $COCOS_TEMPLATES_ROOT $path)
     path=($GOPATH/bin(N-/) ~/bin(N-/) ~/localbin(N-/) /usr/local/bin(N-/) $COCOS_CONSOLE_ROOT $COCOS_TEMPLATES_ROOT $JAVA_HOME/bin(N-/) $path)
 fi
@@ -30,15 +30,15 @@ fi
 #---------------------------------------
 # zplug
 #---------------------------------------
-if [ -f $HOME/.zplug/zplug ]; then
-    source $HOME/.zplug/zplug
+if [ -f $ZPLUG_HOME/init.zsh ]; then
+    source $ZPLUG_HOME/init.zsh
 fi
 
 # zsh-completions
 zplug "zsh-users/zsh-completions"
 
 # enhancd
-zplug "b4b4r07/enhancd", of:enhancd.sh
+zplug "b4b4r07/enhancd", use:init.sh
 
 # zsh-syntax-highlighting
 zplug "zsh-users/zsh-syntax-highlighting", nice:10
