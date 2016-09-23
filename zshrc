@@ -532,9 +532,9 @@ elif [ `uname` = "Darwin" ]; then
     # ssh
     #---------------------------------------
     # 背景を変える
-    if [ -f $HOME/bin/ssh_change_bgcolor ]; then
-        alias ssh="ssh_change_bgcolor"
-    fi
+    # if [ -f $HOME/bin/ssh_change_bgcolor ]; then
+    #     alias ssh="ssh_change_bgcolor"
+    # fi
 
     # プロファイルを変える
     # if [ -f $HOME/bin/ssh_change_profile ]; then
@@ -554,4 +554,6 @@ elif [ `uname` = "Darwin" ]; then
     alias color16="__color16"
     alias snowfall="__snowfall"
     alias matrix="__matrix"
+    alias tramp='emacsclient -n /ssh:$(grep -iE "^Host[[:space:]]+[^*]" ~/.ssh/config|peco|awk "{print \$2}"):~/'
+    alias sudotramp='emacsclient -n /sudo:$(grep -iE "^Host[[:space:]]+[^*]" ~/.ssh/config|peco|awk "{print \$2}"):~/'
 fi
