@@ -134,6 +134,26 @@ function __git-diff-archive() {
     git archive --format=zip --prefix=root/ $h `eval $diff` -o archive.zip
 }
 
+# ビタコレ専用処理
+function __git-diff-archive-assetbundle() {
+    local diff=""
+    local h="HEAD"
+    if [ $# -eq 1 ]; then
+        if expr "$1" : '[0-9]*$' > /dev/null; then
+            diff="HEAD~${1} HEAD"
+        else
+            diff="${1} HEAD"
+        fi
+    elif [ $# -eq 2 ]; then
+        diff="${1} ${2}"
+        h=$1
+    fi
+    if [ "$diff" != "" ]; then
+        diff="git diff --diff-filter=MACR --name-only ${diff} AssetBundles/"
+    fi
+    git archive --format=zip --prefix=root/ $h `eval $diff` -o archive.zip
+}
+
 function __tmux-pbcopy {
     if ! type pbcopy >/dev/null 2>&1 || ! type reattach-to-user-namespace >/dev/null 2>&1; then
         tmux display-message "Error: cannot copy to clipboard."
