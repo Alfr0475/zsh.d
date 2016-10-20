@@ -38,6 +38,8 @@ fi
 zplug "zsh-users/zsh-completions"
 
 # enhancd
+ENHANCD_HYPHEN_ARG="-ls"
+ENHANCD_DOT_ARG="-up"
 zplug "b4b4r07/enhancd", use:init.sh
 
 # zsh-syntax-highlighting
