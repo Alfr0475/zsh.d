@@ -5,25 +5,30 @@ if [ -x /usr/libexec/path_helper ]; then
     eval `/usr/libexec/path_helper -s`
 fi
 
+# DOTPATHの定義
+if [ -z $DOTPATH ]; then
+    if [ -f $HOME/.zshenv ]; then
+        local zshenv_path
+        zshenv_path="$HOME/.zshenv"
+        zshenv_path="${zshenv_path:A:h}"
+        zshenv_path="${zshenv_path%%\/src}"
 
-#------------------------------------------------------------------------------
-# 各種OS判別関数
-function is_mac {
-    if [ `uname` = "Darwin" ]; then
-        return 0
+        if [[ $zshenv_path =~ dotfiles$ ]]; then
+            export DOTPATH="$zshenv_path"
+        else
+            return 1
+        fi
+    else
+        echo "cannot start ZSH, \$DOTPATH not set" 1>&2
+        return 1
     fi
+fi
 
-    return 1
-}
-
-function is_linux {
-    if [ `uname` = "Linux" ]; then
-        return 0
-    fi
-
-    return 1
-}
-#------------------------------------------------------------------------------
+# commonライブラリの読み込み
+export COMMONPATH="$DOTPATH/etc/lib/common.sh"
+if [[ -f $COMMONPATH ]]; then
+    source "$COMMONPATH"
+fi
 
 
 # export EDITOR=/usr/local/bin/vim
@@ -51,7 +56,7 @@ fi
 
 #------------------------------------------------------------------------------
 # Javaのバージョン指定
-if is_mac; then
+if is_osx; then
     if [ -x /usr/libexec/java_home ]; then
         export JAVA_HOME=`/usr/libexec/java_home -v "1.7"`
     fi
