@@ -500,10 +500,6 @@ if [ -e $HOME/.zsh.d/zshfunction ]; then
     source $HOME/.zsh.d/zshfunction
 fi
 
-if [ -e $DOTPATH/etc/lib/functions.sh ]; then
-    source $DOTPATH/etc/lib/functions.sh
-fi
-
 #------------------------------------------------------------------------------
 # エイリアス
 #------------------------------------------------------------------------------
