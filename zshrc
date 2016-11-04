@@ -556,11 +556,6 @@ elif [ `uname` = "Darwin" ]; then
     # fi
 
     # Utilityのalias
-    alias tmux_powerline_theme="__tmux_powerline_theme"
-    alias printpath="__printpath"
-    alias loopwatch="__loopwatch"
-    alias update-fork-repository-git="__update-fork-repository-git"
-    alias tmux-pbcopy="__tmux_pbcopy"
     alias tramp='emacsclient -n /ssh:$(grep -iE "^Host[[:space:]]+[^*]" ~/.ssh/config|peco|awk "{print \$2}"):~/'
     alias sudotramp='emacsclient -n /sudo:$(grep -iE "^Host[[:space:]]+[^*]" ~/.ssh/config|peco|awk "{print \$2}"):~/'
 fi
