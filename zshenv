@@ -32,8 +32,10 @@ fi
 
 
 # export EDITOR=/usr/local/bin/vim
-export EDITOR='emacsclient -nw -a ""'
-export VISUAL='emacsclient -nw -a ""'
+# export EDITOR='emacsclient -n ""'
+# export VISUAL='emacsclient -n ""'
+export EDITOR='vim'
+export VISUAL='vim'
 export GOPATH=$HOME/work/sources
 export ZPLUG_HOME=$HOME/.zsh.d/zplug
 

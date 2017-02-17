@@ -509,7 +509,7 @@ elif [ `uname` = "Darwin" ]; then
         alias la="ls -alG"
     fi
 
-    alias emacs='emacsclient -nw -a ""'
+    alias emacs='emacsclient -n ""'
     alias emacskill='emacsclient -e "(kill-emacs)"'
 
     alias vi="vim"
