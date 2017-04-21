@@ -509,6 +509,7 @@ elif [ `uname` = "Darwin" ]; then
         alias la="ls -alG"
     fi
 
+    alias emacsclient='~/work/tmp/emacs-25.1/lib-src/emacsclient -s ~/.emacs.d/tmp/server/server'
     alias emacs='emacsclient -n ""'
     alias emacskill='emacsclient -e "(kill-emacs)"'
 
