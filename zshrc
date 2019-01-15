@@ -62,7 +62,7 @@ ENHANCD_DOT_ARG="-up"
 zplug "b4b4r07/enhancd", use:init.sh
 
 # zsh-syntax-highlighting
-zplug "zsh-users/zsh-syntax-highlighting", nice:10
+zplug "zsh-users/zsh-syntax-highlighting", defer:2
 
 if ! zplug check --verbose; then
     printf "Install? [y/N]: "
@@ -533,6 +533,11 @@ elif [ `uname` = "Darwin" ]; then
         do
             path=($HOME/.anyenv/envs/$D/shims(N-/) $path)
         done
+    fi
+
+    # SDKMANの設定
+    if [ -d $HOME/.sdkman ]; then
+        source "$HOME/.sdkman/bin/sdkman-init.sh"
     fi
 
     if which peco > /dev/null; then
