@@ -60,7 +60,7 @@ fi
 # Javaのバージョン指定
 if is_osx; then
     if [ -x /usr/libexec/java_home ]; then
-        export JAVA_HOME=`/usr/libexec/java_home -v "1.7"`
+        export JAVA_HOME=`/usr/libexec/java_home -v "1.8"`
     fi
 fi
 #------------------------------------------------------------------------------
