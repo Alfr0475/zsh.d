@@ -41,7 +41,7 @@ if [ `uname` = "Linux" ]; then
 elif [ `uname` = "Darwin" ]; then
     fpath=($(brew --prefix)/share/zsh/site-functions ~/.zsh.d/completions(N-/) ~/.tmuxinator/completions(N-/) $fpath)
     #path=($(brew --prefix coreutils)/libexec/gnubin(N-/) $GOPATH/bin(N-/) ~/bin(N-/) /usr/local/bin(N-/) $COCOS_CONSOLE_ROOT $COCOS_TEMPLATES_ROOT $path)
-    path=($GOPATH/bin(N-/) ~/bin(N-/) ~/localbin(N-/) /usr/local/bin(N-/) $COCOS_CONSOLE_ROOT $COCOS_TEMPLATES_ROOT $JAVA_HOME/bin(N-/) $path)
+    path=($GOPATH/bin(N-/) ~/bin(N-/) ~/localbin(N-/) /usr/local/bin(N-/) /usr/local/sbin(N-/) $COCOS_CONSOLE_ROOT $COCOS_TEMPLATES_ROOT $JAVA_HOME/bin(N-/) $path)
 fi
 
 
