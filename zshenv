@@ -56,6 +56,12 @@ if [ -d /opt/cocos2d-x/current ]; then
     export COCOS_TEMPLATES_ROOT=/opt/cocos2d-x/current/templates
 fi
 
+if is_osx; then
+    if [ -x /usr/bin/xcrun ]; then
+        export CPPFLAGS=-I`xcrun --show-sdk-path`/usr/include
+    fi
+fi
+
 #------------------------------------------------------------------------------
 # Javaのバージョン指定
 if is_osx; then
@@ -68,6 +74,6 @@ fi
 #------------------------------------------------------------------------------
 # PHPのビルド時のOpenSSLバージョン問題の対応
 if is_osx; then
-    export PHP_BULID_CONFIGURE_OPTS="--with-openssl=$(brew --prefix openssl) --with-libxml=$(brew --prefix libxml2) --with-pear"
+    export PHP_BULID_CONFIGURE_OPTS="--with-openssl=$(brew --prefix openssl) --with-libxml=$(brew --prefix libxml2) --with-libedit=$(brew --prefix libedit) --with-zlib-dir=$(brew --prefix zlib) --with-tidy=$(brew --prefix tidy-html5) --with-iconv=$(brew --prefix libiconv) --with-pear"
 fi
 #------------------------------------------------------------------------------
