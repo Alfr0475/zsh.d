@@ -51,6 +51,8 @@ export ANDROID_SDK_ROOT=/usr/local/opt/android-sdk
 export ANDROID_HOME=/usr/local/opt/android-sdk
 export ANT_ROOT=/usr/local/opt/ant/bin
 
+export HOMEBREW_GITHUB_API_TOKEN=47838dca4cc5feb4851c7b8569012bbb01641127
+
 if [ -d /opt/cocos2d-x/current ]; then
     export COCOS_CONSOLE_ROOT=/opt/cocos2d-x/current/tools/cocos2d-console/bin
     export COCOS_TEMPLATES_ROOT=/opt/cocos2d-x/current/templates
@@ -74,6 +76,40 @@ fi
 #------------------------------------------------------------------------------
 # PHPのビルド時のOpenSSLバージョン問題の対応
 if is_osx; then
-    export PHP_BULID_CONFIGURE_OPTS="--with-openssl=$(brew --prefix openssl) --with-libxml=$(brew --prefix libxml2) --with-libedit=$(brew --prefix libedit) --with-zlib-dir=$(brew --prefix zlib) --with-tidy=$(brew --prefix tidy-html5) --with-iconv=$(brew --prefix libiconv) --with-pear"
+    export PHP_BUILD_CONFIGURE_OPTS="--with-bz2=$(brew --prefix bzip2) --with-iconv=$(brew --prefix libiconv) --with-pear"
 fi
 #------------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------------
+# PKG_CONFIG_PATH
+#------------------------------------------------------------------------------
+if is_osx; then
+    if [ -x "$(brew --prefix krb5)/lib/pkgconfig" ]; then
+        export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$(brew --prefix krb5)/lib/pkgconfig"
+    fi
+
+    if [ -x "$(brew --prefix openssl@1.1)/lib/pkgconfig" ]; then
+        export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$(brew --prefix openssl@1.1)/lib/pkgconfig"
+    fi
+
+    if [ -x "$(brew --prefix icu4c)/lib/pkgconfig" ]; then
+        export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$(brew --prefix icu4c)/lib/pkgconfig"
+    fi
+
+    if [ -x "$(brew --prefix libedit)/lib/pkgconfig" ]; then
+        export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$(brew --prefix libedit)/lib/pkgconfig"
+    fi
+
+    if [ -x "$(brew --prefix libxml2)/lib/pkgconfig" ]; then
+        export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$(brew --prefix libxml2)/lib/pkgconfig"
+    fi
+
+    if [ -x "$(brew --prefix libzip)/lib/pkgconfig" ]; then
+        export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$(brew --prefix libzip)/lib/pkgconfig"
+    fi
+
+    if [ -x "$(brew --prefix oniguruma)/lib/pkgconfig" ]; then
+        export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$(brew --prefix oniguruma)/lib/pkgconfig"
+    fi
+fi
