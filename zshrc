@@ -41,7 +41,7 @@ if [ `uname` = "Linux" ]; then
 elif [ `uname` = "Darwin" ]; then
     fpath=($(brew --prefix)/share/zsh/site-functions ~/.zsh.d/completions(N-/) ~/.tmuxinator/completions(N-/) $fpath)
     #path=($(brew --prefix coreutils)/libexec/gnubin(N-/) $GOPATH/bin(N-/) ~/bin(N-/) /usr/local/bin(N-/) $COCOS_CONSOLE_ROOT $COCOS_TEMPLATES_ROOT $path)
-    path=($GOPATH/bin(N-/) ~/bin(N-/) ~/localbin(N-/) /usr/local/bin(N-/) /usr/local/sbin(N-/) $COCOS_CONSOLE_ROOT $COCOS_TEMPLATES_ROOT $JAVA_HOME/bin(N-/) $path)
+    path=($GOPATH/bin(N-/) ~/bin(N-/) ~/localbin(N-/) /usr/local/bin(N-/) /usr/local/sbin(N-/) $COCOS_CONSOLE_ROOT $COCOS_TEMPLATES_ROOT $JAVA_HOME/bin(N-/) ~/Library/Android/sdk/platform-tools(N-/) $path)
 fi
 
 
@@ -410,7 +410,7 @@ setopt transient_rprompt
 
 # 左側のプロンプトを構成する関数
 function __left_prompt {
-    local formatted_upper_prompt="`__prompt_get_path`"$'\n'
+    local formatted_upper_prompt="`__prompt_get_awsprof``__prompt_get_path`"$'\n'
     local formatted_under_prompt="`__prompt_get_user`@`__prompt_get_host`"
 
     local formatted_tmux_display="`__prompt_get_tmux_display`"
@@ -490,6 +490,16 @@ function __prompt_get_tmux_display {
     fi
 }
 
+# AWS Profile情報
+function __prompt_get_awsprof {
+    local profile="${AWS_PROFILE}"
+    if [[ -z "${profile}" ]]; then
+        echo ""
+    else
+        echo "AWS:%F{magenta}${profile}%f "
+    fi
+}
+
 add-zsh-hook precmd __left_prompt
 add-zsh-hook precmd __right_prompt
 
@@ -540,12 +550,30 @@ elif [ `uname` = "Darwin" ]; then
         source "$HOME/.sdkman/bin/sdkman-init.sh"
     fi
 
+    # peco
     if which peco > /dev/null; then
         alias pg='cd $(ghq list -p | peco --prompt "REPOSITORY >" --query "$LBUFFER")'
 
         # Git系便利コマンド peco Ver.
         alias -g B='`git branch -a | peco --prompt "GIT BRANCH >" | head -n 1 | sed -e "s/^\*\s*//g"`'
         alias -g R='`git remote | peco --prompt "GIT REMOTE >" | head -n 1`'
+
+        # awsp in peco
+        if which _awsp > /dev/null; then
+            function awsp() {
+                if [ $# -ge 1 ]; then
+                    export AWS_PROFILE="$1"
+                    echo "Set AWS_PROFILE=$AWS_PROFILE."
+                else
+                    local profiles=$(aws configure list-profiles)
+                    local profiles_array=($(echo $profiles))
+                    local selected_profile=$(echo $profiles | peco)
+
+                    [[ -n ${profiles_array[(re)${selected_profile}]} ]] && export AWS_PROFILE=${selected_profile}; echo 'Updated profile' || echo ''
+                fi
+                export AWS_DEFAULT_PROFILE=$AWS_PROFILE
+            }
+        fi
     fi
 
     #---------------------------------------
