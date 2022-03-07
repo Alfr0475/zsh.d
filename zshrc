@@ -413,6 +413,7 @@ function __left_prompt {
     local formatted_upper_prompt="`__prompt_get_awsprof``__prompt_get_path`"$'\n'
     local formatted_under_prompt="`__prompt_get_user`@`__prompt_get_host`"
 
+    # なぜかここがエラーになる
     local formatted_tmux_display="`__prompt_get_tmux_display`"
     if [ -n "$formatted_tmux_display" ]; then
         formatted_under_prompt="$formatted_under_prompt $formatted_tmux_display"
