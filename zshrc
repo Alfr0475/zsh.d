@@ -40,7 +40,7 @@ typeset -U path cdpath fpath manpath
 if [ `uname` = "Linux" ]; then
 elif [ `uname` = "Darwin" ]; then
     #path=($(brew --prefix coreutils)/libexec/gnubin(N-/) $GOPATH/bin(N-/) ~/bin(N-/) /usr/local/bin(N-/) $COCOS_CONSOLE_ROOT $COCOS_TEMPLATES_ROOT $path)
-    path=(/opt/homebrew/bin(N-/) $GOPATH/bin(N-/) ~/bin(N-/) ~/localbin(N-/) /usr/local/bin(N-/) /usr/local/sbin(N-/) $COCOS_CONSOLE_ROOT $COCOS_TEMPLATES_ROOT $JAVA_HOME/bin(N-/) ~/Library/Android/sdk/platform-tools(N-/) $path)
+    path=(/opt/homebrew/bin(N-/) $GOPATH/bin(N-/) ~/bin(N-/) ~/localbin(N-/) /usr/local/bin(N-/) /usr/local/sbin(N-/) $COCOS_CONSOLE_ROOT $COCOS_TEMPLATES_ROOT $JAVA_HOME/bin(N-/) ~/Library/Android/sdk/platform-tools(N-/) ~/.local/bin(N-/) $path)
     fpath=($(brew --prefix)/share/zsh/site-functions ~/.zsh.d/completions(N-/) ~/.tmuxinator/completions(N-/) $fpath)
 fi
 
@@ -410,7 +410,7 @@ setopt transient_rprompt
 
 # 左側のプロンプトを構成する関数
 function __left_prompt {
-    local formatted_upper_prompt="`__prompt_get_awsprof``__prompt_get_path`"$'\n'
+    local formatted_upper_prompt="`__prompt_get_awsprof``__prompt_get_python_venv``__prompt_get_path`"$'\n'
     local formatted_under_prompt="`__prompt_get_user`@`__prompt_get_host`"
 
     # なぜかここがエラーになる
@@ -501,6 +501,13 @@ function __prompt_get_awsprof {
     fi
 }
 
+# Python venv情報
+function __prompt_get_python_venv {
+    if [ -n "$VIRTUAL_ENV" ]; then
+        echo "VENV:%F{magenta}`basename \"$VIRTUAL_ENV\"`%f "
+    fi
+}
+
 add-zsh-hook precmd __left_prompt
 add-zsh-hook precmd __right_prompt
 
@@ -560,7 +567,7 @@ elif [ `uname` = "Darwin" ]; then
         alias -g R='`git remote | peco --prompt "GIT REMOTE >" | head -n 1`'
 
         # awsp in peco
-        if which _awsp > /dev/null; then
+        if which aws > /dev/null; then
             function awsp() {
                 if [ $# -ge 1 ]; then
                     export AWS_PROFILE="$1"
