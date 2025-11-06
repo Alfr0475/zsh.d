@@ -266,6 +266,7 @@ fi
 # 補完機能の初期化
 autoload -Uz compinit
 compinit -d $HOME/.zsh.d/tmp/$USER-zcompdump
+autoload -U +X bashcompinit && bashcompinit -i
 
 if is_osx; then
     # aliyun-cli
