@@ -41,7 +41,7 @@ if [ `uname` = "Linux" ]; then
 elif [ `uname` = "Darwin" ]; then
     #path=($(brew --prefix coreutils)/libexec/gnubin(N-/) $GOPATH/bin(N-/) ~/bin(N-/) /usr/local/bin(N-/) $COCOS_CONSOLE_ROOT $COCOS_TEMPLATES_ROOT $path)
     path=(/opt/homebrew/bin(N-/) $GOPATH/bin(N-/) ~/bin(N-/) ~/localbin(N-/) /usr/local/bin(N-/) /usr/local/sbin(N-/) $COCOS_CONSOLE_ROOT $COCOS_TEMPLATES_ROOT $JAVA_HOME/bin(N-/) ~/Library/Android/sdk/platform-tools(N-/) ~/.local/bin(N-/) $path)
-    fpath=($(brew --prefix)/share/zsh/site-functions ~/.zsh.d/completions(N-/) ~/.tmuxinator/completions(N-/) $fpath)
+    fpath=($(brew --prefix)/share/zsh/site-functions ~/.zsh.d/completions(N-/) ~/.tmuxinator/completions(N-/) ~/.docker/completions(N-/) $fpath)
 fi
 
 
@@ -266,6 +266,13 @@ fi
 # 補完機能の初期化
 autoload -Uz compinit
 compinit -d $HOME/.zsh.d/tmp/$USER-zcompdump
+
+if is_osx; then
+    # aliyun-cli
+    if [ -x $(brew --prefix)/Cellar/aliyun-cli ]; then
+        complete -o nospace -F /opt/homebrew/bin/aliyun aliyun
+    fi
+fi
 
 #------------------------------------------------------------------------------
 # プロンプト
