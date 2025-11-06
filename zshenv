@@ -65,6 +65,11 @@ if is_osx; then
 fi
 
 #------------------------------------------------------------------------------
+# Python設定
+export PYTHONDONTWRITEBYTECODE=1  # .pycファイルを作成しない
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
 # Javaのバージョン指定
 if is_osx; then
     if [ -x /usr/libexec/java_home ]; then
@@ -89,8 +94,8 @@ if is_osx; then
         export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$(/opt/homebrew/bin/brew --prefix krb5)/lib/pkgconfig"
     fi
 
-    if [ -x "$(/opt/homebrew/bin/brew --prefix openssl@1.1)/lib/pkgconfig" ]; then
-        export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$(/opt/homebrew/bin/brew --prefix openssl@1.1)/lib/pkgconfig"
+    if [ -x "$(/opt/homebrew/bin/brew --prefix openssl@3)/lib/pkgconfig" ]; then
+        export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$(/opt/homebrew/bin/brew --prefix openssl@3)/lib/pkgconfig"
     fi
 
     if [ -x "$(/opt/homebrew/bin/brew --prefix icu4c)/lib/pkgconfig" ]; then

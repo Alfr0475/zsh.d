@@ -553,6 +553,12 @@ elif [ `uname` = "Darwin" ]; then
         done
     fi
 
+    # uvの設定
+    if [ -d $HOME/.cargo ]; then
+        source $HOME/.cargo/env
+        eval "$(uv generate-shell-completion zsh)"
+    fi
+
     # SDKMANの設定
     if [ -d $HOME/.sdkman ]; then
         source "$HOME/.sdkman/bin/sdkman-init.sh"
