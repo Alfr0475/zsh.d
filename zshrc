@@ -436,7 +436,7 @@ function __left_prompt {
 
 # 右側のプロンプトを構成する関数
 function __right_prompt {
-    local formatted_prompt="`__prompt_get_vcs_info_msg`"
+    local formatted_prompt="`__prompt_get_vcs_info_msg``__prompt_get_exec_time`"
 
     # 右側のプロンプト
     RPROMPT="$formatted_prompt"
@@ -514,6 +514,11 @@ function __prompt_get_python_venv {
     if [ -n "$VIRTUAL_ENV" ]; then
         echo "VENV:%F{magenta}`basename \"$VIRTUAL_ENV\"`%f "
     fi
+}
+
+# コマンドの実行時刻
+function __prompt_get_exec_time {
+    echo "%{$fg[green]%} %D{%Y/%m/%d} %* %{$reset_color%}"
 }
 
 add-zsh-hook precmd __left_prompt
